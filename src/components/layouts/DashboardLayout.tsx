@@ -10,6 +10,7 @@ import {
   DollarSign,
   BarChart3,
   LogOut,
+  Brain,
 } from 'lucide-react'
 
 const navigation = [
@@ -17,6 +18,7 @@ const navigation = [
   { name: 'Клиенты', href: '/clients', icon: Users },
   { name: 'Проекты', href: '/projects', icon: FolderKanban },
   { name: 'Сметы', href: '/estimates', icon: FileText },
+  { name: '🤖 AI-Анализ', href: '/estimates/ai-profitability', icon: Brain },
   { name: 'Материалы', href: '/materials', icon: Package },
   { name: 'Работники', href: '/workers', icon: UserCog },
   { name: 'Финансы', href: '/finance', icon: DollarSign },
@@ -82,4 +84,5 @@ export default function DashboardLayout() {
     </div>
   )
 }
+
 

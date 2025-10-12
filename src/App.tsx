@@ -12,6 +12,7 @@ import DashboardPage from './pages/dashboard/DashboardPage'
 import ClientsPage from './pages/clients/ClientsPage'
 import ProjectsPage from './pages/projects/ProjectsPage'
 import EstimatesPage from './pages/estimates/EstimatesPage'
+import AIProfitabilityPage from './pages/estimates/AIProfitabilityPage'
 import MaterialsPage from './pages/materials/MaterialsPage'
 import WorkersPage from './pages/workers/WorkersPage'
 import FinancePage from './pages/finance/FinancePage'
@@ -58,6 +59,7 @@ function App() {
             <Route path="/clients" element={<ClientsPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/estimates" element={<EstimatesPage />} />
+            <Route path="/estimates/ai-profitability" element={<AIProfitabilityPage />} />
             <Route path="/materials" element={<MaterialsPage />} />
             <Route path="/workers" element={<WorkersPage />} />
             <Route path="/finance" element={<FinancePage />} />
@@ -70,4 +72,5 @@ function App() {
 }
 
 export default App
+
 
