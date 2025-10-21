@@ -155,6 +155,47 @@ export const documentsApi = {
   },
 }
 
+// Workers API
+export const workersApi = {
+  getAll: async (params?: any) => {
+    const response = await api.get('/workers', { params })
+    return response.data
+  },
+
+  getOne: async (id: number) => {
+    const response = await api.get(`/workers/${id}`)
+    return response.data
+  },
+
+  create: async (data: any) => {
+    const response = await api.post('/workers', data)
+    return response.data
+  },
+
+  assign: async (data: any) => {
+    const response = await api.post('/workers/assign', data)
+    return response.data
+  },
+
+  getAvailable: async () => {
+    const response = await api.get('/workers/available')
+    return response.data
+  },
+}
+
+// Materials API
+export const materialsApi = {
+  getAll: async (params?: any) => {
+    const response = await api.get('/materials', { params })
+    return response.data
+  },
+
+  create: async (data: any) => {
+    const response = await api.post('/materials', data)
+    return response.data
+  },
+}
+
 export default api
 
 
