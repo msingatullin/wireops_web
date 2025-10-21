@@ -26,8 +26,12 @@ export default function EstimatesPage() {
   })
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => estimatesApi.create(data),
-    onSuccess: () => {
+    mutationFn: (data: any) => {
+      console.log('Creating estimate with data:', data)
+      return estimatesApi.create(data)
+    },
+    onSuccess: (response) => {
+      console.log('Estimate created successfully:', response)
       queryClient.invalidateQueries({ queryKey: ['estimates'] })
       setShowModal(false)
       setFormData({
@@ -36,6 +40,12 @@ export default function EstimatesPage() {
         status: 'DRAFT',
         notes: '',
       })
+      alert('Смета успешно создана!')
+    },
+    onError: (error: any) => {
+      console.error('Error creating estimate:', error)
+      console.error('Error response:', error.response?.data)
+      alert(`Ошибка при создании сметы: ${error.response?.data?.detail || error.message}`)
     },
   })
 
@@ -45,6 +55,7 @@ export default function EstimatesPage() {
       ...formData,
       project_id: parseInt(formData.project_id),
     }
+    console.log('Submitting estimate form with data:', submitData)
     createMutation.mutate(submitData)
   }
 
