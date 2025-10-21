@@ -196,6 +196,37 @@ export const materialsApi = {
   },
 }
 
+// Estimates API
+export const estimatesApi = {
+  getAll: async (params?: any) => {
+    const response = await api.get('/estimates', { params })
+    return response.data
+  },
+
+  create: async (data: any) => {
+    const response = await api.post('/estimates', data)
+    return response.data
+  },
+}
+
+// Finance API
+export const financeApi = {
+  getTransactions: async (params?: any) => {
+    const response = await api.get('/finance/transactions', { params })
+    return response.data
+  },
+
+  getSummary: async () => {
+    const response = await api.get('/finance/transactions/summary')
+    return response.data
+  },
+
+  createTransaction: async (data: any) => {
+    const response = await api.post('/finance/transactions', data)
+    return response.data
+  },
+}
+
 export default api
 
 
