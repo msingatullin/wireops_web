@@ -1,13 +1,51 @@
-import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { workersApi } from '@/lib/api'
 import { formatDateTime } from '@/lib/utils'
-import { Plus } from 'lucide-react'
+import { Plus, X } from 'lucide-react'
 
 export default function WorkersPage() {
+  const [showModal, setShowModal] = useState(false)
+  const [formData, setFormData] = useState({
+    full_name: '',
+    phone: '',
+    email: '',
+    worker_type: 'EMPLOYEE',
+    hourly_rate: '',
+    specialization: '',
+  })
+
+  const queryClient = useQueryClient()
+
   const { data: workers, isLoading } = useQuery({
     queryKey: ['workers'],
     queryFn: () => workersApi.getAll(),
   })
+
+  const createMutation = useMutation({
+    mutationFn: (data: any) => workersApi.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['workers'] })
+      setShowModal(false)
+      setFormData({
+        full_name: '',
+        phone: '',
+        email: '',
+        worker_type: 'EMPLOYEE',
+        hourly_rate: '',
+        specialization: '',
+      })
+    },
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const submitData = {
+      ...formData,
+      hourly_rate: formData.hourly_rate ? parseFloat(formData.hourly_rate) : undefined,
+    }
+    createMutation.mutate(submitData)
+  }
 
   const getWorkerTypeLabel = (type: string) => {
     const types: Record<string, string> = {
@@ -22,7 +60,10 @@ export default function WorkersPage() {
     <div>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Работники</h1>
-        <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <button
+          onClick={() => setShowModal(true)}
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
           <Plus className="w-5 h-5 mr-2" />
           Добавить работника
         </button>
@@ -112,6 +153,126 @@ export default function WorkersPage() {
           )}
         </div>
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-gray-900">Добавить работника</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="px-6 py-4">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    ФИО <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.full_name}
+                    onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Телефон <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="+7 (999) 123-45-67"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Тип работника <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    required
+                    value={formData.worker_type}
+                    onChange={(e) => setFormData({ ...formData, worker_type: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                    <option value="EMPLOYEE">Сотрудник</option>
+                    <option value="CONTRACTOR">Подрядчик</option>
+                    <option value="PARTNER">Партнер</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Почасовая ставка (₽/час)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.hourly_rate}
+                    onChange={(e) => setFormData({ ...formData, hourly_rate: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="500.00"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Специализация
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.specialization}
+                    onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="Монтажник, Электрик и т.д."
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Отмена
+                </button>
+                <button
+                  type="submit"
+                  disabled={createMutation.isPending}
+                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400"
+                >
+                  {createMutation.isPending ? 'Сохранение...' : 'Сохранить'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

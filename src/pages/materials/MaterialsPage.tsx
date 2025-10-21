@@ -1,19 +1,58 @@
-import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { materialsApi } from '@/lib/api'
 import { formatDateTime } from '@/lib/utils'
-import { Plus } from 'lucide-react'
+import { Plus, X } from 'lucide-react'
 
 export default function MaterialsPage() {
+  const [showModal, setShowModal] = useState(false)
+  const [formData, setFormData] = useState({
+    name: '',
+    article: '',
+    unit: 'шт',
+    price: '',
+    description: '',
+  })
+
+  const queryClient = useQueryClient()
+
   const { data: materials, isLoading } = useQuery({
     queryKey: ['materials'],
     queryFn: () => materialsApi.getAll(),
   })
 
+  const createMutation = useMutation({
+    mutationFn: (data: any) => materialsApi.create(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['materials'] })
+      setShowModal(false)
+      setFormData({
+        name: '',
+        article: '',
+        unit: 'шт',
+        price: '',
+        description: '',
+      })
+    },
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    const submitData = {
+      ...formData,
+      price: formData.price ? parseFloat(formData.price) : undefined,
+    }
+    createMutation.mutate(submitData)
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Материалы</h1>
-        <button className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <button
+          onClick={() => setShowModal(true)}
+          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
           <Plus className="w-5 h-5 mr-2" />
           Добавить материал
         </button>
@@ -95,6 +134,116 @@ export default function MaterialsPage() {
           )}
         </div>
       </div>
+
+      {/* Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-gray-900">Добавить материал</h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="px-6 py-4">
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Название <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Артикул
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.article}
+                    onChange={(e) => setFormData({ ...formData, article: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="ART-12345"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Единица измерения <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    required
+                    value={formData.unit}
+                    onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  >
+                    <option value="шт">Штуки (шт)</option>
+                    <option value="м">Метры (м)</option>
+                    <option value="м²">Квадратные метры (м²)</option>
+                    <option value="кг">Килограммы (кг)</option>
+                    <option value="л">Литры (л)</option>
+                    <option value="уп">Упаковки (уп)</option>
+                    <option value="комп">Комплекты (комп)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Цена (₽)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    placeholder="1500.00"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Описание
+                  </label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  Отмена
+                </button>
+                <button
+                  type="submit"
+                  disabled={createMutation.isPending}
+                  className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400"
+                >
+                  {createMutation.isPending ? 'Сохранение...' : 'Сохранить'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
