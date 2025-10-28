@@ -3,8 +3,33 @@
  */
 import axios from 'axios'
 
-// Убираем /v1 из URL по умолчанию
-const API_URL = import.meta.env.VITE_API_URL || 'https://wireops-backend-mhyinxjwaq-ew.a.run.app/api'
+const DEFAULT_API_URL = 'https://wireops-backend-mhyinxjwaq-ew.a.run.app/api/v1'
+
+const normalizeApiUrl = (url?: string) => {
+  if (!url) {
+    return DEFAULT_API_URL
+  }
+
+  let normalized = url.trim()
+
+  if (!normalized) {
+    return DEFAULT_API_URL
+  }
+
+  // Всегда используем HTTPS, даже если в переменной указан http
+  if (!/^https?:\/\//i.test(normalized)) {
+    normalized = `https://${normalized}`
+  }
+
+  normalized = normalized.replace(/^http:\/\//i, 'https://')
+
+  // Удаляем хвостовой слэш чтобы избежать двойных слэшей при запросах
+  normalized = normalized.replace(/\/+$/, '')
+
+  return normalized
+}
+
+const API_URL = normalizeApiUrl(import.meta.env.VITE_API_URL)
 
 export const api = axios.create({
   baseURL: API_URL,
