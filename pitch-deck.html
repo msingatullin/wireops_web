@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WireOps - Pitch Deck</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow-x: hidden;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px;
+            color: white;
+            scroll-snap-align: start;
+        }
+
+        .slides-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 20px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+
+        p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            max-width: 900px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .tagline {
+            font-size: 1.8rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .logo {
+            width: 200px;
+            height: 200px;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+        }
+
+        .content-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 1000px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #ffd700;
+        }
+
+        .feature h4 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #ffd700;
+        }
+
+        .cta {
+            margin-top: 50px;
+            font-size: 1.5rem;
+            padding: 20px 50px;
+            background: #ffd700;
+            color: #667eea;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 40px rgba(255, 215, 0, 0.4);
+            transition: transform 0.3s;
+        }
+
+        .cta:hover {
+            transform: translateY(-5px);
+        }
+
+        .slide-number {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+
+        ul {
+            text-align: left;
+            font-size: 1.3rem;
+            line-height: 2;
+            max-width: 800px;
+        }
+
+        li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #ffd700;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    </style>
+</head>
+<body>
+    <div class="slides-container">
+        <!-- Слайд 1: Титульный -->
+        <div class="slide">
+            <svg class="logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#ffd700;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#ffed4e;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <!-- Круг -->
+                <circle cx="100" cy="100" r="90" fill="none" stroke="url(#logoGradient)" stroke-width="4"/>
+                <!-- Провода/Схема -->
+                <path d="M 60 80 L 140 80 M 100 80 L 100 120 M 70 100 L 130 100 M 80 120 L 120 120"
+                      stroke="url(#logoGradient)" stroke-width="6" stroke-linecap="round"/>
+                <!-- Точки соединения -->
+                <circle cx="60" cy="80" r="6" fill="#ffd700"/>
+                <circle cx="140" cy="80" r="6" fill="#ffd700"/>
+                <circle cx="100" cy="80" r="6" fill="#ffd700"/>
+                <circle cx="100" cy="120" r="6" fill="#ffd700"/>
+                <circle cx="70" cy="100" r="6" fill="#ffd700"/>
+                <circle cx="130" cy="100" r="6" fill="#ffd700"/>
+            </svg>
+            <h1>WireOps</h1>
+            <p class="tagline">AI-платформа для автоматизации монтажного бизнеса</p>
+            <p style="margin-top: 50px; font-size: 1.2rem; opacity: 0.8;">Security Systems · ConTech · B2B SaaS</p>
+            <div class="slide-number">1/9</div>
+        </div>
+
+        <!-- Слайд 2: Проблема -->
+        <div class="slide">
+            <h2>😓 Проблема</h2>
+            <div class="content-box">
+                <p style="font-size: 1.8rem; margin-bottom: 30px;">
+                    Монтажные компании теряют <span class="gradient-text" style="font-weight: 800;">40% времени</span> на рутину
+                </p>
+                <ul>
+                    <li>Ручной расчет смет занимает 2-4 часа</li>
+                    <li>Ошибки в расчётах → потеря прибыли 15-20%</li>
+                    <li>Хаос в учёте материалов и работников</li>
+                    <li>Нет контроля за проектами в реальном времени</li>
+                    <li>Бумажная волокита и Excel-таблицы</li>
+                </ul>
+            </div>
+            <div class="slide-number">2/9</div>
+        </div>
+
+        <!-- Слайд 3: Решение -->
+        <div class="slide">
+            <h2>💡 Решение</h2>
+            <div class="content-box">
+                <p style="font-size: 1.5rem; margin-bottom: 30px;">
+                    <span class="gradient-text" style="font-weight: 800;">AI анализирует чертежи за 30 секунд</span> и создаёт точную смету
+                </p>
+                <div class="features">
+                    <div class="feature">
+                        <h4>🤖 AI-анализ документов</h4>
+                        <p style="font-size: 1.1rem;">GPT-4V + Claude распознают объекты на чертежах</p>
+                    </div>
+                    <div class="feature">
+                        <h4>📊 Управление проектами</h4>
+                        <p style="font-size: 1.1rem;">Полный контроль от лида до сдачи</p>
+                    </div>
+                    <div class="feature">
+                        <h4>💰 Финансовый учёт</h4>
+                        <p style="font-size: 1.1rem;">Доходы, расходы, прибыльность</p>
+                    </div>
+                    <div class="feature">
+                        <h4>📦 Склад и автопарк</h4>
+                        <p style="font-size: 1.1rem;">Контроль материалов и транспорта</p>
+                    </div>
+                </div>
+            </div>
+            <div class="slide-number">3/9</div>
+        </div>
+
+        <!-- Слайд 4: Как работает -->
+        <div class="slide">
+            <h2>⚙️ Как это работает</h2>
+            <div class="content-box">
+                <div style="text-align: left; font-size: 1.3rem; line-height: 2.5;">
+                    <p><span class="gradient-text" style="font-weight: 800;">1.</span> Менеджер загружает чертёж объекта</p>
+                    <p><span class="gradient-text" style="font-weight: 800;">2.</span> AI определяет: камеры, датчики, кабель, площадь</p>
+                    <p><span class="gradient-text" style="font-weight: 800;">3.</span> Система считает материалы + работы</p>
+                    <p><span class="gradient-text" style="font-weight: 800;">4.</span> Готовая смета за 30 секунд</p>
+                    <p><span class="gradient-text" style="font-weight: 800;">5.</span> Автоматический контроль проекта до завершения</p>
+                </div>
+            </div>
+            <p style="margin-top: 40px; font-size: 1.5rem;">
+                <span class="gradient-text" style="font-weight: 800;">Было:</span> 3 часа ручной работы<br>
+                <span class="gradient-text" style="font-weight: 800;">Стало:</span> 30 секунд автоматизации
+            </p>
+            <div class="slide-number">4/9</div>
+        </div>
+
+        <!-- Слайд 5: Рынок -->
+        <div class="slide">
+            <h2>🎯 Рынок</h2>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-number">50,000+</div>
+                    <div class="stat-label">Монтажных компаний в РФ</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">₽850 млрд</div>
+                    <div class="stat-label">Рынок систем безопасности</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">15%</div>
+                    <div class="stat-label">Годовой рост рынка</div>
+                </div>
+            </div>
+            <div class="content-box" style="margin-top: 40px;">
+                <p style="font-size: 1.3rem;">
+                    <span class="gradient-text" style="font-weight: 800;">TAM:</span> 50,000 компаний × ₽180,000/год = <span style="font-weight: 800;">₽9 млрд/год</span>
+                </p>
+            </div>
+            <div class="slide-number">5/9</div>
+        </div>
+
+        <!-- Слайд 6: Бизнес-модель -->
+        <div class="slide">
+            <h2>💵 Бизнес-модель</h2>
+            <div class="content-box">
+                <h3>SaaS подписка</h3>
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-number">₽5,990</div>
+                        <div class="stat-label">Старт (до 3 пользователей)</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">₽14,990</div>
+                        <div class="stat-label">Бизнес (до 10 пользователей)</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number">₽29,990</div>
+                        <div class="stat-label">Энтерпрайз (безлимит)</div>
+                    </div>
+                </div>
+                <p style="margin-top: 30px; font-size: 1.2rem;">
+                    + Комиссия за AI-анализ документов: ₽50-200/чертёж
+                </p>
+            </div>
+            <div class="slide-number">6/9</div>
+        </div>
+
+        <!-- Слайд 7: Конкуренты -->
+        <div class="slide">
+            <h2>🥊 Конкуренты</h2>
+            <div class="content-box">
+                <div style="text-align: left;">
+                    <p style="margin-bottom: 20px;"><span class="gradient-text" style="font-weight: 800;">Excel/1С:</span> Устаревшие, нет AI, неудобные</p>
+                    <p style="margin-bottom: 20px;"><span class="gradient-text" style="font-weight: 800;">SmartSuite:</span> Только учёт, нет анализа документов</p>
+                    <p style="margin-bottom: 20px;"><span class="gradient-text" style="font-weight: 800;">Битрикс24:</span> Универсальный, не для монтажа</p>
+                </div>
+                <div style="margin-top: 40px; padding: 30px; background: rgba(255,215,0,0.2); border-radius: 15px;">
+                    <h3 style="margin-bottom: 15px;">🚀 Наше преимущество</h3>
+                    <ul style="font-size: 1.2rem;">
+                        <li>Единственные с AI-анализом чертежей</li>
+                        <li>Заточены под монтажный бизнес</li>
+                        <li>Мобильное приложение для бригад</li>
+                        <li>Готовое решение из коробки</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="slide-number">7/9</div>
+        </div>
+
+        <!-- Слайд 8: Traction -->
+        <div class="slide">
+            <h2>📈 Текущие результаты</h2>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-number">MVP</div>
+                    <div class="stat-label">Готов и работает</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">Платящих клиента</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">₽30k</div>
+                    <div class="stat-label">MRR (растёт)</div>
+                </div>
+            </div>
+            <div class="content-box" style="margin-top: 40px;">
+                <h3>План на 12 месяцев</h3>
+                <ul style="font-size: 1.2rem;">
+                    <li>100 платящих клиентов</li>
+                    <li>₽1.5 млн MRR</li>
+                    <li>Интеграции с 1С и поставщиками</li>
+                    <li>Выход на рынки Казахстана и Беларуси</li>
+                </ul>
+            </div>
+            <div class="slide-number">8/9</div>
+        </div>
+
+        <!-- Слайд 9: Команда и Ask -->
+        <div class="slide">
+            <h2>🤝 Инвестиционное предложение</h2>
+            <div class="content-box">
+                <div class="stat-box" style="margin-bottom: 30px;">
+                    <div class="stat-number">₽10 млн</div>
+                    <div class="stat-label">Раунд seed</div>
+                </div>
+                <h3>Использование средств:</h3>
+                <ul style="font-size: 1.2rem; margin-bottom: 30px;">
+                    <li>₽4 млн - маркетинг и продажи (40%)</li>
+                    <li>₽3 млн - разработка продукта (30%)</li>
+                    <li>₽2 млн - команда (20%)</li>
+                    <li>₽1 млн - инфраструктура (10%)</li>
+                </ul>
+                <p style="font-size: 1.3rem; margin-top: 30px;">
+                    <span class="gradient-text" style="font-weight: 800;">Цель:</span> 100 клиентов, ₽18 млн ARR через 12 месяцев
+                </p>
+            </div>
+            <button class="cta">Давайте обсудим!</button>
+            <div class="slide-number">9/9</div>
+        </div>
+    </div>
+
+    <script>
+        // Навигация стрелками
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                window.scrollBy(0, window.innerHeight);
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                window.scrollBy(0, -window.innerHeight);
+            }
+        });
+    </script>
+</body>
+</html>
