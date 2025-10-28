@@ -23,8 +23,12 @@ export default function WorkersPage() {
   })
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => workersApi.create(data),
-    onSuccess: () => {
+    mutationFn: (data: any) => {
+      console.log('Creating worker with data:', data)
+      return workersApi.create(data)
+    },
+    onSuccess: (response) => {
+      console.log('Worker created successfully:', response)
       queryClient.invalidateQueries({ queryKey: ['workers'] })
       setShowModal(false)
       setFormData({
@@ -35,6 +39,12 @@ export default function WorkersPage() {
         hourly_rate: '',
         specialization: '',
       })
+      alert('Работник успешно создан!')
+    },
+    onError: (error: any) => {
+      console.error('Error creating worker:', error)
+      console.error('Error response:', error.response?.data)
+      alert(`Ошибка при создании работника: ${error.response?.data?.detail || error.message}`)
     },
   })
 
@@ -44,6 +54,7 @@ export default function WorkersPage() {
       ...formData,
       hourly_rate: formData.hourly_rate ? parseFloat(formData.hourly_rate) : undefined,
     }
+    console.log('Submitting worker form with data:', submitData)
     createMutation.mutate(submitData)
   }
 

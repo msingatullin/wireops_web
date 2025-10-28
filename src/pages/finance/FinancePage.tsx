@@ -31,8 +31,12 @@ export default function FinancePage() {
   })
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => financeApi.createTransaction(data),
-    onSuccess: () => {
+    mutationFn: (data: any) => {
+      console.log('Creating transaction with data:', data)
+      return financeApi.createTransaction(data)
+    },
+    onSuccess: (response) => {
+      console.log('Transaction created successfully:', response)
       queryClient.invalidateQueries({ queryKey: ['transactions'] })
       setShowModal(false)
       setFormData({
@@ -42,6 +46,12 @@ export default function FinancePage() {
         payment_method: 'CASH',
         date: new Date().toISOString().split('T')[0],
       })
+      alert('Транзакция успешно создана!')
+    },
+    onError: (error: any) => {
+      console.error('Error creating transaction:', error)
+      console.error('Error response:', error.response?.data)
+      alert(`Ошибка при создании транзакции: ${error.response?.data?.detail || error.message}`)
     },
   })
 
@@ -51,6 +61,7 @@ export default function FinancePage() {
       ...formData,
       amount: parseFloat(formData.amount),
     }
+    console.log('Submitting transaction form with data:', submitData)
     createMutation.mutate(submitData)
   }
 

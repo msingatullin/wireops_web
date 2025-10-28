@@ -22,8 +22,12 @@ export default function MaterialsPage() {
   })
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => materialsApi.create(data),
-    onSuccess: () => {
+    mutationFn: (data: any) => {
+      console.log('Creating material with data:', data)
+      return materialsApi.create(data)
+    },
+    onSuccess: (response) => {
+      console.log('Material created successfully:', response)
       queryClient.invalidateQueries({ queryKey: ['materials'] })
       setShowModal(false)
       setFormData({
@@ -33,6 +37,12 @@ export default function MaterialsPage() {
         price: '',
         description: '',
       })
+      alert('Материал успешно создан!')
+    },
+    onError: (error: any) => {
+      console.error('Error creating material:', error)
+      console.error('Error response:', error.response?.data)
+      alert(`Ошибка при создании материала: ${error.response?.data?.detail || error.message}`)
     },
   })
 
@@ -42,6 +52,7 @@ export default function MaterialsPage() {
       ...formData,
       price: formData.price ? parseFloat(formData.price) : undefined,
     }
+    console.log('Submitting material form with data:', submitData)
     createMutation.mutate(submitData)
   }
 

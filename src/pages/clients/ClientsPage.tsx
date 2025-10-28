@@ -23,8 +23,12 @@ export default function ClientsPage() {
   })
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => clientsApi.create(data),
-    onSuccess: () => {
+    mutationFn: (data: any) => {
+      console.log('Creating client with data:', data)
+      return clientsApi.create(data)
+    },
+    onSuccess: (response) => {
+      console.log('Client created successfully:', response)
       queryClient.invalidateQueries({ queryKey: ['clients'] })
       setShowModal(false)
       setFormData({
@@ -35,11 +39,18 @@ export default function ClientsPage() {
         address: '',
         notes: '',
       })
+      alert('Клиент успешно создан!')
+    },
+    onError: (error: any) => {
+      console.error('Error creating client:', error)
+      console.error('Error response:', error.response?.data)
+      alert(`Ошибка при создании клиента: ${error.response?.data?.detail || error.message}`)
     },
   })
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    console.log('Submitting form with data:', formData)
     createMutation.mutate(formData)
   }
 

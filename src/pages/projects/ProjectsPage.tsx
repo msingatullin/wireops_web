@@ -28,8 +28,12 @@ export default function ProjectsPage() {
   })
 
   const createMutation = useMutation({
-    mutationFn: (data: any) => projectsApi.create(data),
-    onSuccess: () => {
+    mutationFn: (data: any) => {
+      console.log('Creating project with data:', data)
+      return projectsApi.create(data)
+    },
+    onSuccess: (response) => {
+      console.log('Project created successfully:', response)
       queryClient.invalidateQueries({ queryKey: ['projects'] })
       setShowModal(false)
       setFormData({
@@ -40,6 +44,12 @@ export default function ProjectsPage() {
         description: '',
         status: 'LEAD',
       })
+      alert('Проект успешно создан!')
+    },
+    onError: (error: any) => {
+      console.error('Error creating project:', error)
+      console.error('Error response:', error.response?.data)
+      alert(`Ошибка при создании проекта: ${error.response?.data?.detail || error.message}`)
     },
   })
 
@@ -49,6 +59,7 @@ export default function ProjectsPage() {
       ...formData,
       client_id: parseInt(formData.client_id),
     }
+    console.log('Submitting project form with data:', submitData)
     createMutation.mutate(submitData)
   }
 
