@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://wireops-backend-mhyinxjwaq-ew.a.run.app/api/v1'
+const API_URL = import.meta.env.VITE_API_URL?.replace('http://', 'https://') || 'https://wireops-backend-mhyinxjwaq-ew.a.run.app/api'
 
 interface ProfitabilityRequest {
   client_budget: number

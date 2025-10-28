@@ -3,8 +3,8 @@
  */
 import axios from 'axios'
 
-// Убираем /v1 из URL по умолчанию
-const API_URL = import.meta.env.VITE_API_URL || 'https://wireops-backend-mhyinxjwaq-ew.a.run.app/api'
+// ВАЖНО: Всегда используем HTTPS для production (без /v1 - backend сам обрабатывает)
+const API_URL = import.meta.env.VITE_API_URL?.replace('http://', 'https://') || 'https://wireops-backend-mhyinxjwaq-ew.a.run.app/api'
 
 export const api = axios.create({
   baseURL: API_URL,
