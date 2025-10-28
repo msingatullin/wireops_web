@@ -3,7 +3,7 @@
  */
 import axios from 'axios'
 
-const DEFAULT_API_URL = 'https://wireops-backend-mhyinxjwaq-ew.a.run.app/api/v1'
+const DEFAULT_API_URL = 'http://localhost:8000/api'
 
 const normalizeApiUrl = (url?: string) => {
   if (!url) {
@@ -16,12 +16,10 @@ const normalizeApiUrl = (url?: string) => {
     return DEFAULT_API_URL
   }
 
-  // Всегда используем HTTPS, даже если в переменной указан http
+  // Добавляем протокол если его нет
   if (!/^https?:\/\//i.test(normalized)) {
-    normalized = `https://${normalized}`
+    normalized = `http://${normalized}`
   }
-
-  normalized = normalized.replace(/^http:\/\//i, 'https://')
 
   // Удаляем хвостовой слэш чтобы избежать двойных слэшей при запросах
   normalized = normalized.replace(/\/+$/, '')

@@ -22,7 +22,16 @@ export default function LoginPage() {
       login(access_token, refresh_token)
       navigate('/')
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Ошибка входа')
+      const errorMessage = err.response?.data?.detail
+      if (typeof errorMessage === 'string') {
+        setError(errorMessage)
+      } else if (Array.isArray(errorMessage)) {
+        setError(errorMessage.map((e: any) => e.msg || e.message || String(e)).join(', '))
+      } else if (errorMessage && typeof errorMessage === 'object') {
+        setError(JSON.stringify(errorMessage))
+      } else {
+        setError('Ошибка входа')
+      }
     } finally {
       setLoading(false)
     }
