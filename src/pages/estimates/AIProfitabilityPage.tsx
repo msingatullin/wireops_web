@@ -3,7 +3,9 @@
  */
 import { useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import { useAuthStore } from '@/store/authStore'
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://wireops-backend-mhyinxjwaq-ew.a.run.app/api/v1'
 
@@ -71,6 +73,10 @@ interface ProfitabilityResult {
 }
 
 export default function AIProfitabilityPage() {
+  const accessToken = useAuthStore((state) => state.accessToken)
+  const logout = useAuthStore((state) => state.logout)
+  const navigate = useNavigate()
+  
   const [formData, setFormData] = useState<ProfitabilityRequest>({
     client_budget: 100000,
     max_client_budget: 130000,
@@ -96,18 +102,31 @@ export default function AIProfitabilityPage() {
 
   const analyzeMutation = useMutation({
     mutationFn: async (data: ProfitabilityRequest) => {
-      const token = localStorage.getItem('access_token')
-      const response = await axios.post<ProfitabilityResult>(
-        `${API_URL}/estimates/ai/profitability-analysis`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
+      if (!accessToken) {
+        throw new Error('Вы не авторизованы. Пожалуйста, войдите в систему.')
+      }
+      
+      try {
+        const response = await axios.post<ProfitabilityResult>(
+          `${API_URL}/estimates/ai/profitability-analysis`,
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        return response.data
+      } catch (error: any) {
+        if (error.response?.status === 401) {
+          throw new Error('Ошибка авторизации. Попробуйте выйти и войти заново.')
         }
-      )
-      return response.data
+        if (error.response?.data?.detail) {
+          throw new Error(error.response.data.detail)
+        }
+        throw new Error(error.message || 'Ошибка при анализе проекта')
+      }
     },
   })
 
@@ -393,7 +412,26 @@ export default function AIProfitabilityPage() {
             {analyzeMutation.isError && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-6">
                 <h3 className="text-red-800 font-semibold mb-2">❌ Ошибка</h3>
-                <p className="text-red-600">{(analyzeMutation.error as Error).message}</p>
+                <p className="text-red-600 mb-4">{(analyzeMutation.error as Error).message}</p>
+                {(analyzeMutation.error as Error).message.includes('авторизации') && (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        logout()
+                        navigate('/login')
+                      }}
+                      className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+                    >
+                      Выйти и войти заново
+                    </button>
+                    <button
+                      onClick={() => window.location.reload()}
+                      className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
+                    >
+                      Обновить страницу
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 

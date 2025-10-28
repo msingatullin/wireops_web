@@ -97,3 +97,4 @@ Deploy на Vercel/Netlify:
 - Команда сборки: `npm run build`
 - Директория: `dist`
 
+
